@@ -1,0 +1,25 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        #商品服务路由
+        - id: product_route
+          uri: lb://mall-product-service
+          predicates:
+            - Path=/api/product/**
+          filters: #路径重写
+            - RewritePath=/api(?<segment>/?.*), /$\{segment}
+        #renren-fast路由
+        - id: admin_route
+          uri: lb://renren-fast-service
+          predicates:
+            - Path=/api/**
+          filters: #路径重写
+            - RewritePath=/api(?<segment>/?.*), /renren-fast/$\{segment}
+#      globalcors: #解决跨域问题 可以写在配置文件中还可以写在class文件中
+#        cors-configurations:
+#          '[/**]':
+#            allowedOrigins: "*" #允许所有路径
+#            allowedMethods: "*" #允许所有请求方式
+#            allowedHeaders: "*" #允许所有请求头
+#            allowCredentials: true #允许带cookie等认证信息
